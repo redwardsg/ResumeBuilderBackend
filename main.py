@@ -1,18 +1,22 @@
-from flask import Flask, request, jsonify, session, render_template
+from flask import Flask, request,  json, jsonify, session, render_template
+from flask_cors import CORS
 
 import mysql.connector
 from mysql.connector import errorcode
 import datetime
 
 app = Flask(__name__)
+app.debug = True
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 # database configuration
+#9390
 db_config = {
     'user': 'root',
-    'password': '9390',
+    'password': 'R1ch@rdMcl@ne',
     'host': 'localhost',
     'port': '3306',
-    'database': 'resumebuilder',
+    'database': 'resumebuilderdb',
     'raise_on_warnings': True
 }
 
@@ -29,7 +33,7 @@ def test_db_connection():
 
 
 def create_db_connection():
-    print("Connected")
+    print("Connecting....")
     try:
 
         cnx = mysql.connector.connect(**db_config)
@@ -84,22 +88,30 @@ def login():
     print('login started')
     if request.method == 'POST':
         try:
-            email_1 = request.form['email']
-            print(email_1)
-            password_1 = request.form['password']
+            data = request.get_json()
+            email = data['email']
+            password = data['password']
+            print(data)
+            print(email)
+            print(password)
+            # email_1 = request.form['email']
+            # print(email_1)
+            # password_1 = request.form['password']
+            # print(password_1)
         except KeyError:
             # Handle the error caused by missing or invalid data in the request payload
             return jsonify({'status': 400, 'success': 'False', 'message': 'Missing or invalid data'})
         cnx = create_db_connection()
         cursor = cnx.cursor()
-        query = "SELECT * FROM user_table WHERE email=%s and password=%s, (email, password)"
-        cursor.execute(query)
+        query = "SELECT * FROM user_table WHERE email=%(email)s and password=%(password)s"
+        print(query)
+        cursor.execute(query,data)
         user = cursor.fetchone()
         cnx.close()
         if user:
-            return jsonify({'message': 'User logged in successfully'})
+           return jsonify({'message': 'User logged in successfully'})
         else:
-            return jsonify({'message': 'Invalid credentials'})
+             return jsonify({'message': 'Invalid credentials'})
 
 
 if __name__ == '__main__':
