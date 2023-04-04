@@ -13,10 +13,10 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 #9390
 db_config = {
     'user': 'root',
-    'password': 'R1ch@rdMcl@ne',
+    'password': '9390',
     'host': 'localhost',
     'port': '3306',
-    'database': 'resumebuilderdb',
+    'database': 'resumebuilder',
     'raise_on_warnings': True
 }
 
