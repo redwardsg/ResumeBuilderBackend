@@ -1,11 +1,15 @@
-from flask import Flask, request,  json, jsonify, session, render_template
+from flask import Flask, request, json, jsonify, redirect, session, render_template
 from flask_cors import CORS
+from flask_session import Session
 
 import mysql.connector
 from mysql.connector import errorcode
 import datetime
 
 app = Flask(__name__)
+app.config["SESSION_PERMANENT"] = True
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 app.debug = True
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -13,10 +17,10 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 #9390
 db_config = {
     'user': 'root',
-    'password': '9390',
+    'password': 'R1ch@rdMcl@ne',
     'host': 'localhost',
     'port': '3306',
-    'database': 'resumebuilder',
+    'database': 'resumebuilderdb',
     'raise_on_warnings': True
 }
 
@@ -81,6 +85,14 @@ def register():
 
 global user_id
 
+@app.route('/test-session', methods=['GET', 'POST'])
+def testSession():
+    if not session.get("email"):
+        # if not there in the session then redirect to the login page
+        return jsonify({'message': 'Invalid session'})
+    else:
+        return jsonify({'message': 'Valid user' + session.get('email')})
+
 
 # login API
 @app.route('/login', methods=['POST'])
@@ -109,9 +121,10 @@ def login():
         user = cursor.fetchone()
         cnx.close()
         if user:
+           session["email"] = email
            return jsonify({'message': 'User logged in successfully'})
         else:
-             return jsonify({'message': 'Invalid credentials'})
+            return jsonify({'message': 'Invalid credentials'})
 
 
 if __name__ == '__main__':
