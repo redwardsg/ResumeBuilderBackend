@@ -93,6 +93,26 @@ def testSession():
     else:
         return jsonify({'message': 'Valid user' + session.get('email')})
 
+# Fetch Personal Info API
+@app.route('/FetchPersonalInfo', methods=['GET'])
+def FetchPersonalInfo():
+    try:
+        # data = request.get_json()
+        # email = data['email']
+        cnx = create_db_connection()
+        cursor = cnx.cursor()
+        query = "SELECT * FROM personalinfo WHERE email='rina.eds@gmail.com'"
+        print(query)
+        cursor.execute(query)
+        retRecord = cursor.fetchone()
+        cnx.close()
+        if retRecord:
+           return jsonify({'message': 'Personal Info Found', 'email' : retRecord[0], 'firstname' : retRecord[1], 'lastname' : retRecord[2], 'DOB' : retRecord[3]})
+        else:
+            return jsonify({'message': 'Personal Info Not Found'})
+    except KeyError:
+        return jsonify({'status': 400, 'success': 'False', 'message': 'Error Retrieving Data'})
+
 
 # login API
 @app.route('/login', methods=['POST'])
