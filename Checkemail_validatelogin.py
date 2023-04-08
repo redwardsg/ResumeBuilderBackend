@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 db_config = {
     'user': 'root',
-    'password': '9390',
+    'password': 'R1ch@rdMcl@ne',
     'host': 'localhost',
     'port': '3306',
     'database': 'resumebuilder',
@@ -47,11 +47,9 @@ def create_db_connection():
 # def example_template():
 #     return render_template("index.html")
 
-
-
-# registration API
-@app.route('/register', methods = ['POST'])
-def register():
+# SignUp API
+@app.route('/signup', methods = ['POST'])
+def signup():
     print("Register")
     if request.method=='POST':
         firstname = request.form['firstname']
@@ -73,7 +71,7 @@ def register():
         user = mycursor.fetchone()
         if user:
             cnx.close()
-            response = {'status_code': 400, 'message': 'Email already registered.'}
+            response = {'status': 400, 'success': 'False', 'message': 'Email already registered.'}
             return jsonify(response)
         last_updated = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         query_signup = "INSERT INTO  sign_up(firstname,lastname,gender,dob,email,mobile_number,password) VALUES (%s, %s, %s, %s, %s, %s, %s)"

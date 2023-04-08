@@ -46,8 +46,8 @@ def create_db_connection():
         else:
             print(err)
 
-@app.route('/register', methods=['POST'])
-def register():
+@app.route('/signup', methods=['POST'])
+def signup():
     print("Register")
     if request.method == 'POST':
         try:
