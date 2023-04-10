@@ -1,6 +1,7 @@
 from flask import Flask, request, json, jsonify, redirect, session, render_template
 from flask_cors import CORS
 from flask_session import Session
+import pdfkit
 
 import mysql.connector
 from mysql.connector import errorcode
@@ -28,6 +29,7 @@ db_config = {
 # helper function to create database connection
 @app.route('/test-db-connection')
 def test_db_connection():
+    print("Testing Connection")
     cnx = create_db_connection()
     cursor = cnx.cursor()
     cursor.execute("SELECT VERSION()")
@@ -55,6 +57,10 @@ def create_db_connection():
 # @app.route("/" , methods = ["GET"])
 # def example_template():
 #     return render_template("index.html")
+
+@app.route('/download', methods=['GET'])
+def download():
+    print("hello")
 
 
 # registration API
