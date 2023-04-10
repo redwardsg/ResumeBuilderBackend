@@ -68,21 +68,23 @@ def download():
 def register():
     print("Register")
     if request.method == 'POST':
-        firstname = request.form['firstname']
-        lastname = request.form['lastname']
-        gender = request.form['gender']
-        dob = request.form['dob']
-        email = request.form['email']
-        mobile_number = request.form['mobile-number']
-        password = request.form['password']
-        confirm_password = request.form['confirm_password']
-        if password != confirm_password:
-            return jsonify({'message': 'Passwords do not match'})
+        data = request.get_json()
+        firstname = data['firstname']
+        # firstname = request.form['firstname']
+        # lastname = request.form['lastname']
+        # gender = request.form['gender']
+        # dob = request.form['dob']
+        # email = request.form['email']
+        # mobile_number = request.form['mobile-number']
+        # password = request.form['password']
+        # confirm_password = request.form['confirm_password']
+        # if password != confirm_password:
+        #     return jsonify({'message': 'Passwords do not match'})
         cnx = create_db_connection()
         cursor = cnx.cursor()
-        last_updated = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        query = "INSERT INTO user_table(email,password,is_active,last_updated,HasContent) VALUES (%s, %s, %s, %s, %s)"
-        values = (email, password, 1, last_updated, 0)
+        #last_updated = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        query = "INSERT INTO users(email,password,isactive,hascontent) VALUES (%s, %s, %s, %s)"
+        values = (firstname, firstname, 1, 0)
         cursor.execute(query, values)
         cnx.commit()
         cnx.close()
@@ -141,7 +143,7 @@ def login():
             return jsonify({'status': 400, 'success': 'False', 'message': 'Missing or invalid data'})
         cnx = create_db_connection()
         cursor = cnx.cursor()
-        query = "SELECT * FROM user_table WHERE email=%(email)s and password=%(password)s"
+        query = "SELECT * FROM users WHERE email=%(email)s and password=%(password)s"
         print(query)
         cursor.execute(query,data)
         user = cursor.fetchone()
